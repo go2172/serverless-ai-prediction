@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Exam Score Prediction</title>
+</head>
+<body>
+  <h1>Exam Score Prediction Dashboard</h1>
+
+  <label>Hours studied:
+    <input id="hours_studied" type="number" value="5">
+  </label><br>
+
+  <label>Attendance (%):
+    <input id="attendance_pct" type="number" value="80">
+  </label><br>
+
+  <label>Previous grade:
+    <input id="previous_grade" type="number" value="75">
+  </label><br>
+
+  <label>Assignments done:
+    <input id="assignments_done" type="number" value="8">
+  </label><br>
+
+  <label>Extra classes (1 = yes, 0 = no):
+    <input id="extra_classes" type="number" value="1">
+  </label><br><br>
+
+  <button onclick="makePrediction()">Predict</button>
+
+  <h3>Result:</h3>
+  <pre id="result">No prediction yet.</pre>
+
+  <script>
+    async function makePrediction() {
+      const payload = {
+        hours_studied: Number(document.getElementById('hours_studied').value),
+        attendance_pct: Number(document.getElementById('attendance_pct').value),
+        previous_grade: Number(document.getElementById('previous_grade').value),
+        assignments_done: Number(document.getElementById('assignments_done').value),
+        extra_classes: Number(document.getElementById('extra_classes').value)
+      };
+
+      try {
+        const res = await fetch("https://ls1b888pma.execute-api.us-east-1.amazonaws.com/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+      } catch (e) {
+        document.getElementById('result').innerText = 'Error: ' + e;
+      }
+    }
+  </script>
+</body>
+</html>
